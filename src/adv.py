@@ -1,4 +1,5 @@
 from room import Room
+from player import Player
 
 # Declare all the rooms
 
@@ -37,15 +38,53 @@ room['treasure'].s_to = room['narrow']
 # Main
 #
 
+# Tries to move player in input direction
+def try_direction(player, direction):
+    attribute = direction + '_to'
+
+    # Allows us to check if class has an attribute
+    if hasattr(player.location, attribute):
+        # For valid direction
+        # getattr fetches value associated with attribute
+        # effectively updating player's location to new room
+        player.location = getattr(player.location, attribute)
+    else:
+        # For invalid direction
+        print("You search and search, but can't seem to find an exit!")
+
+
 # Make a new player object that is currently in the 'outside' room.
+player = Player(room['outside'])
 
 # Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
+while True:
+    #
+    # * Prints the current room name
+    # * Prints the current description (the textwrap module might be useful here).
+    print('\n')
+    print(player.location)
+    # * Waits for user input and decides what to do.
+    command = input("\nCommand: ").strip().lower().split()
+    
+    # If the user enters "q", quit the game.
+    if command == 'q':
+        break
+    #
+    # If the user enters a cardinal direction, attempt to move to the room there.
+    # Print an error message if the movement isn't allowed.
+    command = command[0]
+
+    if command == 'n':
+        # move north
+        try_direction(player, command)
+    elif command == 's':
+        # move south
+        try_direction(player, command)
+    elif command == 'e':
+        # move east
+        try_direction(player, command)
+    elif command == 'w':
+        # move west
+        try_direction(player, command)
+    #
+    
