@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from item import Item
 
 # Declare all the rooms
 
@@ -34,6 +35,17 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+
+room['treasure'].items.append(
+    Item('magical_key',
+    'An old gold key, doesnt look like anything special but might be useful.')
+)
+
+room['foyer'].items.append(
+    Item('lit_candel',
+    'A lit candel sitting on a table, provides a sufficient source of illumination.')
+)
+
 #
 # Main
 #
@@ -52,7 +64,6 @@ def try_direction(player, direction):
         # For invalid direction
         print("You search and search, but can't seem to find an exit!")
 
-
 # Make a new player object that is currently in the 'outside' room.
 player = Player(room['outside'])
 
@@ -64,18 +75,22 @@ while True:
     print('\n')
     print(player.location)
     # * Waits for user input and decides what to do.
-    command = input("\nCommand: ").strip().lower().split()
-    
+    command = input("\nCommand: ").lower().split()
+        
     # If the user enters "q", quit the game.
     if command == 'q':
         break
     #
     # If the user enters a cardinal direction, attempt to move to the room there.
     # Print an error message if the movement isn't allowed.
-    command = command[0]
+    if len(command) > 1:
+        item = command[1]
 
+    command = command[0]
+        
     if command == 'n':
         # move north
+        # print('This works!')
         try_direction(player, command)
     elif command == 's':
         # move south
@@ -86,5 +101,36 @@ while True:
     elif command == 'w':
         # move west
         try_direction(player, command)
+    elif command == 'inspect':
+        # inspect current room for items
+        loot = player.select_room().search_room()
+        #if loot is not None: 
+            #print(f"After an exhausting search, you have found a {item_name}")
+        #else:
+            #print(f"Searching tiredlessly has proven un-fruitful, there are no items in this room")
+    elif command == 'get':
+        # user takes an item in the room
+        #item = player.select_room().grab_item(item)
+        if (player.location == room['foyer']) or (player.location == room['treasure']):
+            player.select_room().grab_item(item)
+            player.add_item(item)
+            print(f'You pick up a {player.items}')
+        else:
+            print(f'You scan the area from top to bottom, but dont find any items')
+        print('\n')
+        #print(f'You pick up a {player.items}')
+        #print(f"You've picked up an item")
+    elif command == 'drop':
+        # user drops an item in the room
+        item_tbd = player.drop_item(item)
+        if item_tbd is not None:
+            player.location.items.append(item)
+            #player.location.add_item(item_tbd)
+            print("\n")
+            print(f"You've have dropped an item")
+            #print(f"You have dropped {item_tbd}")
+        else:
+            print(f"You do not have a item to drop")
+            
     #
-    
+        
