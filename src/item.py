@@ -1,6 +1,9 @@
 # Basic item class for day 2 mvp
 # should have name and description
 class Item:
-    def __init__(self, name, desc):
+    def __init__(self, name, description):
         self.name = name
-        self.desc = desc
+        self.description = description
+
+    def __str__(self):
+        return f"{self.name}: {self.description}"
